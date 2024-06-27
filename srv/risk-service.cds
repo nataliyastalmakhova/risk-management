@@ -10,6 +10,9 @@ service RiskService {
 
     @readonly entity ListOfRisks as projection on rm.Risks {ID, title, owner }
 
+    entity Items       as projection on rm.Items ;
+    action addItem(descr: String, title: String, quantity:Integer);
+    function getItemsByQuantity(quantity: Integer) returns many Items;
     // BusinessPartner will be used later
     //@readonly entity BusinessPartners as projection on rm.BusinessPartners;
 }

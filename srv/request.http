@@ -1,0 +1,9 @@
+POST http://localhost:39889/odata/v4/service/risk/addItem
+Content-Type: application/json
+Connection: keep-alive
+
+{
+    "descr":"descr",
+    "title": "title",
+    "quantity": 20
+}
