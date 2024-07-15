@@ -7,3 +7,11 @@ Connection: keep-alive
     "title": "title",
     "quantity": 20
 }
+
+
+###
+GET http://localhost:39449/odata/v4/service/risk/getProducts()
+
+
+###
+GET http://localhost:39449/odata/v4/service/risk/getOnPremise()

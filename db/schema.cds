@@ -1,6 +1,6 @@
 
 namespace riskmanagement;
-
+using { API_BUSINESS_PARTNER as external } from '../srv/external/API_BUSINESS_PARTNER.csn';
 using {
         managed,
         cuid,
@@ -15,7 +15,7 @@ entity Risks : cuid, managed {
         descr                    : String;
         miti                     : Association to Mitigations;
         impact                   : Integer;
-        // bp : Association to BusinessPartners;
+        bp : Association to BusinessPartners;
         virtual criticality      : Integer;
         virtual PrioCriticality : Integer;
 }
@@ -42,3 +42,8 @@ entity Items : cuid {
         descr    : String;
         quantity :  Integer;
 }
+
+entity BusinessPartners as projection on external.A_BusinessPartner {
+       key BusinessPartner,
+       BusinessPartnerFullName as FullName,
+    }
