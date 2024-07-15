@@ -8,6 +8,7 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
+        - npm ci
         - npx cds build --production
 modules:
   - name: risk-management-srv
@@ -25,6 +26,7 @@ modules:
       - name: risk-management-auth
       - name: risk-management-db
       - name: risk-management-destination
+      - name: risk-management-connectivity
 
   - name: risk-management-db-deployer
     type: hdb
@@ -36,11 +38,11 @@ modules:
 
   - name: risk-management
     type: approuter.nodejs
-    path: app/ # from cds.env.folders. Consider also cds.env.build.target -> gen/app
+    path: app/
     parameters:
       keep-existing-routes: true
-      disk-quota: 256M
-      memory: 256M
+      disk-quota: 1024M
+      memory: 1024M
     requires:
       - name: srv-api
         group: destinations
@@ -55,20 +57,22 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
-      service-plan: application
+      service-plan: application 
+      service-keys:  
+        - name: key  
       path: ./xs-security.json
       config:
         xsappname: risk-management-${org}-${space}
         tenant-mode: dedicated
         role-collections:
-        - name: 'RiskManager-${org}-${space}'
-          description: Manage Risks
-          role-template-references:
-          - $XSAPPNAME.RiskManager
-        - name: 'RiskViewer-${org}-${space}'
-          description: View Risks
-          role-template-references:
-          - $XSAPPNAME.RiskViewer
+          - name: 'RiskManager-${org}-${space}'
+            description: Manage Risks
+            role-template-references:
+              - $XSAPPNAME.RiskManager
+          - name: 'RiskViewer-${org}-${space}'
+            description: View Risks
+            role-template-references:
+              - $XSAPPNAME.RiskViewer
         oauth2-configuration:
           redirect-uris:
             - https://**.hana.ondemand.com/login/callback # Wildcard redirect to SAP BTP (You might want to make this more exclusive)
@@ -83,3 +87,8 @@ resources:
     parameters:
       service: destination
       service-plan: lite
+  - name: risk-management-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: lite
+      service: connectivity
